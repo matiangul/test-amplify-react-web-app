@@ -15,11 +15,13 @@ query {
 }`;
 
 class App extends React.Component {
-    state = { todos: [] };
+    state = { todos: [], people: [] };
 
     async componentDidMount() {
       const todos = await API.graphql(graphqlOperation(listTodos));
-      this.setState({ todos: todos.data.listTodos.items })
+      this.setState({ todos: todos.data.listTodos.items });
+      const people = await API.get('PeopleAPI', '/people');
+      this.setState({ people: people.data });
     }
 
     render() {
@@ -39,11 +41,21 @@ class App extends React.Component {
                         Learn React
                     </a>
                 </header>
+                <h2>Todo list</h2>
                 {
-                  this.state.todos.map((todo, i) => (
-                    <div>
+                  this.state.todos.map((todo) => (
+                    <div key={todo.name}>
                       <h3>{todo.name}</h3>
                       <p>{todo.description}</p>
+                    </div>
+                  ))
+                }
+                <h2>People list</h2>
+                {
+                  this.state.people.map((person) => (
+                    <div key={person.name}>
+                      <h3>{person.name}</h3>
+                      <p>{person.hari_color}</p>
                     </div>
                   ))
                 }

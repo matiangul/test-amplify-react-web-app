@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/people",
+            "lambdaFunction": "PeopleFunction",
+            "privacy": {
+                "private": true,
+                "auth": []
+            }
+        }
+    ],
+    "resourceName": "PeopleAPI",
+    "apiName": "PeopleAPI",
+    "functionArns": [
+        {
+            "lambdaFunction": "PeopleFunction"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "my-amplify-app-dev-20190828211713-authRole",
+        "unAuthRoleName": "my-amplify-app-dev-20190828211713-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "PeopleFunction",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
