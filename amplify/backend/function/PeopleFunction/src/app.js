@@ -8,6 +8,7 @@ See the License for the specific language governing permissions and limitations 
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 
 // declare a new express app
@@ -15,20 +16,19 @@ var app = express();
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
-// Enable CORS for all methods
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', '*');
-    next();
-});
+// Enable CORS for all paths and methods
+app.use(cors());
 
 /**********************
  * Example get method *
  **********************/
 
 app.get('/people', function(req, res) {
-    // Add your code here
-    res.json({ success: 'get call succeed!', url: req.url });
+    const people = [
+        { name: 'Nader', hair_color: 'bronw' },
+        { name: 'Lily', hair_color: 'red' },
+    ];
+    res.json({ status: 'success', data: people });
 });
 
 app.get('/people/*', function(req, res) {
@@ -41,11 +41,8 @@ app.get('/people/*', function(req, res) {
  ****************************/
 
 app.post('/people', function(req, res) {
-    const people = [
-        { name: 'Nader', hair_color: 'bronw' },
-        { name: 'Lily', hair_color: 'red' },
-    ];
-    res.json({ status: 'success', data: people });
+    // Add your code here
+    res.json({ success: 'post call succeed!', url: req.url, body: req.body });
 });
 
 app.post('/people/*', function(req, res) {
