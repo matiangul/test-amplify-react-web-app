@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import { withAuthenticator } from 'aws-amplify-react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
 
 const listTodos = `
 query {
@@ -15,13 +15,32 @@ query {
 }`;
 
 class App extends React.Component {
-    state = { todos: [], people: [] };
+    state = { todos: [], people: [], file: null, fileName: '', fileURL: '' };
 
     async componentDidMount() {
       const todos = await API.graphql(graphqlOperation(listTodos));
       this.setState({ todos: todos.data.listTodos.items });
       const people = await API.get('PeopleAPI', '/people');
       this.setState({ people: people.data });
+    }
+
+    handleUpload = (e) => {
+      const file = e.target.files[0];
+      const fileName = file.name;
+      const fileURL = URL.createObjectURL(file);
+      this.setState({ file, fileName, fileURL });
+    }
+
+    saveFile = () => {
+      Storage.put(this.state.fileName, this.state.file)
+        .then(() => {
+          Storage.get(this.state.fileName)
+            .then((url) => {
+              this.setState({ file: null, fileName: '', fileURL: url })
+            })
+            .catch(console.error)
+        })
+        .catch(console.error)
     }
 
     render() {
@@ -41,6 +60,9 @@ class App extends React.Component {
                         Learn React
                     </a>
                 </header>
+                <input type='file' onChange={this.handleUpload} />
+                <img src={this.state.fileURL} alt='uploaded img' />
+                <button onClick={this.saveFile}>Upload</button>
                 <h2>Todo list</h2>
                 {
                   this.state.todos.map((todo) => (
